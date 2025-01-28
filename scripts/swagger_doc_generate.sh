@@ -1,0 +1,1 @@
+docker-compose run --rm artisan l5-swagger:generate
