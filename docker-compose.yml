@@ -15,6 +15,8 @@ services:
             - app-network
         depends_on:
             - db
+        env_file:
+            - .env
         entrypoint: ["supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 
     artisan:
@@ -31,6 +33,8 @@ services:
                 condition: service_healthy
         networks:
             - app-network
+        env_file:
+            - .env
         entrypoint: ["php", "artisan"]
         command: ["migrate", "--force"]
 
@@ -53,10 +57,10 @@ services:
         container_name: mysql
         restart: unless-stopped
         environment:
-            MYSQL_ROOT_PASSWORD: kapnova
-            MYSQL_DATABASE: kapnova
-            MYSQL_USER: kapnova
-            MYSQL_PASSWORD: kapnova
+            MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+            MYSQL_DATABASE: ${DB_DATABASE}
+            MYSQL_USER: ${DB_USERNAME}
+            MYSQL_PASSWORD: ${DB_PASSWORD}
         ports:
             - "3306:3306"
         volumes:
