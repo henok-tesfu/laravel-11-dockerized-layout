@@ -1,9 +1,9 @@
 # Variables
-DOCKER_RUN = docker compose run --rm artisan
+DOCKER_RUN = docker compose run --rm app
 DOCKER_EXEC_APP = docker compose exec app
 DOCKER_EXEC_MYAPP = docker exec myapp
 
-.PHONY: help migrate-fresh migrate seed start-supervisor swagger-generate artisan
+.PHONY: help migrate-fresh migrate seed start-supervisor swagger-generate artisan npm-install npm-run-dev npm-run-build
 
 help:
 	@echo "Available commands:"
@@ -12,19 +12,22 @@ help:
 	@echo "  make seed              - Seed the database."
 	@echo "  make start-supervisor  - Start Supervisor in app service."
 	@echo "  make swagger-generate  - Generate Swagger docs."
-	@echo "  make artisan cmd=...   - Run any php artisan command. example make artisan cmd='make:model Test'"
+	@echo "  make artisan cmd=...   - Run any php artisan command. Example: make artisan cmd='make:model Test'"
+	@echo "  make npm-install       - Install npm dependencies."
+	@echo "  make npm-run-dev       - Run npm dev server."
+	@echo "  make npm-run-build     - Build assets for production."
 
 # Run migrate:fresh and seed
 migrate-fresh:
-	$(DOCKER_RUN) migrate:fresh --seed
+	$(DOCKER_RUN) php artisan migrate:fresh --seed
 
 # Run database migrations
 migrate:
-	$(DOCKER_RUN) migrate
+	$(DOCKER_RUN) php artisan migrate
 
 # Seed the database
 seed:
-	$(DOCKER_RUN) db:seed
+	$(DOCKER_RUN) php artisan db:seed
 
 # Start Supervisor and reload its configuration
 start-supervisor:
@@ -35,8 +38,20 @@ start-supervisor:
 
 # Generate Swagger docs
 swagger-generate:
-	$(DOCKER_RUN) l5-swagger:generate
+	$(DOCKER_RUN) php artisan l5-swagger:generate
 
 # Run any php artisan command
 artisan:
-	$(DOCKER_RUN) $(cmd)
+	$(DOCKER_RUN) php artisan $(cmd)
+
+# Run npm install
+npm-install:
+	$(DOCKER_EXEC_APP) npm install
+
+# Run npm dev server
+npm-run-dev:
+	$(DOCKER_EXEC_APP) npm run dev
+
+# Build assets for production
+npm-run-build:
+	$(DOCKER_EXEC_APP) npm run build
