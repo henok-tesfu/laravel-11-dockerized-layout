@@ -16,6 +16,7 @@ help:
 	@echo "  make npm-install       - Install npm dependencies."
 	@echo "  make npm-run-dev       - Run npm dev server."
 	@echo "  make npm-run-build     - Build assets for production."
+    @echo "  make npm cmd=...       - Install npm command. Example:make npm cmd='install package'"
 
 # Run migrate:fresh and seed
 migrate-fresh:
@@ -55,3 +56,8 @@ npm-run-dev:
 # Build assets for production
 npm-run-build:
 	$(DOCKER_EXEC_APP) npm run build
+
+# Run Npm command
+npm:
+	$(DOCKER_EXEC_APP) npm $(cmd)
+
